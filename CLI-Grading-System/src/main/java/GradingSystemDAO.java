@@ -4,30 +4,51 @@ import javax.sql.DataSource;
 import java.sql.*;
 import java.util.Scanner;
 
-public class ToDODAO {
-    private  DataSource ds;
+public class GradingSystemDAO {
+    private DataSource ds;
 
-    ToDODAO(){
+    GradingSystemDAO(){
         try{
-        ds = getDataSource();
+            ds = getDataSource();
         }catch (Exception e){
-
+            System.out.println("Error connecting to database");
+            System.out.println(e.getMessage());
+            System.exit(0);
         }
     }
 
     private  DataSource getDataSource() throws SQLException {
         MysqlDataSource ds = new MysqlDataSource();
         ds.setServerName("localhost");
-        ds.setDatabaseName("todoDB");
+        ds.setDatabaseName("grading_system");
         ds.setUser("root");
         ds.setPassword("123456");
-        //       ds.setServerTimezone("America/California");
         ds.setUseSSL(false);
         ds.setAllowPublicKeyRetrieval(true);
 
         return ds;
     }
 
+    public User loginUser(String username, String password) {
+        User user = null;
+        try (Connection conn = ds.getConnection()) {
+            String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
+            PreparedStatement pStmt = conn.prepareStatement(sql);
+            pStmt.setString(1, username);
+            pStmt.setString(2, password);
+            ResultSet rs = pStmt.executeQuery();
+            if (rs.next()) {
+//                System.out.println("Login successful!");
+                user = new User(username, password, Role.valueOf(rs.getString("role")));
+            } else {
+//                System.out.println("Invalid username or password.");
+            }
+        }
+        catch (SQLException e) {
+            System.out.println("Error during login: " + e.getMessage());
+        }
+        return user;
+    }
 
 
     public  void removeItem(int itemId) throws SQLException {

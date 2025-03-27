@@ -19,7 +19,7 @@ public class ToDoListMain {
             System.out.println("Enter an option:");
             String option = sc.nextLine();
 
-            ToDODAO dao = new ToDODAO();
+            GradingSystemDAO dao = new GradingSystemDAO();
 
             try {
                 switch (option) {
