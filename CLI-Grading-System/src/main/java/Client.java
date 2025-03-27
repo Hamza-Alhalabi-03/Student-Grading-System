@@ -20,6 +20,9 @@ public class Client {
             userInput = new Scanner(System.in);
 
             System.out.println("Connected to server at " + HOST + ":" + PORT);
+            System.out.println("\n*******************");
+            System.out.println("Enter 'exit' to quit at any time ... ");
+            System.out.println("*******************\n");
 
             BufferedReader finalIn = in;
 
@@ -28,7 +31,7 @@ public class Client {
                 try {
                     String serverResponse;
                     while ((serverResponse = finalIn.readLine()) != null) {
-                        System.out.println("Server response: " + serverResponse);
+                        System.out.println(serverResponse);
                     }
                 } catch (IOException e) {
                     if (!Thread.currentThread().isInterrupted()) {
@@ -40,8 +43,7 @@ public class Client {
 
             // Main thread for sending messages
             while (true) {
-                System.out.println("*******************");
-                System.out.println("Enter command (or 'exit' to quit): ");
+
                 String command = userInput.nextLine();
 
                 if ("exit".equalsIgnoreCase(command)) {

@@ -2,7 +2,7 @@ import com.mysql.cj.jdbc.MysqlDataSource;
 
 import javax.sql.DataSource;
 import java.sql.*;
-import java.util.Scanner;
+import java.util.*;
 
 public class GradingSystemDAO {
     private DataSource ds;
@@ -29,7 +29,7 @@ public class GradingSystemDAO {
         return ds;
     }
 
-    public User loginUser(String username, String password) {
+    public User getUser(String username, String password) {
         User user = null;
         try (Connection conn = ds.getConnection()) {
             String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
@@ -38,16 +38,89 @@ public class GradingSystemDAO {
             pStmt.setString(2, password);
             ResultSet rs = pStmt.executeQuery();
             if (rs.next()) {
-//                System.out.println("Login successful!");
                 user = new User(username, password, Role.valueOf(rs.getString("role")));
             } else {
-//                System.out.println("Invalid username or password.");
             }
         }
         catch (SQLException e) {
             System.out.println("Error during login: " + e.getMessage());
         }
         return user;
+    }
+
+    public Map<String, String> getStudentCourses(String username) {
+        Map<String, String> coursesWithInstructors = new HashMap<>();
+        try (Connection conn = ds.getConnection()) {
+            String sql = "SELECT c.course_name, u_instructor.username AS instructor_name " +
+                    "FROM users u_student " +
+                    "JOIN enrollments e ON u_student.user_id = e.student_id " +
+                    "JOIN courses c ON e.course_id = c.course_id " +
+                    "JOIN users u_instructor ON c.instructor_id = u_instructor.user_id " +
+                    "WHERE u_student.username = ?";
+
+            PreparedStatement pStmt = conn.prepareStatement(sql);
+            pStmt.setString(1, username);
+            ResultSet rs = pStmt.executeQuery();
+
+            while (rs.next()) {
+                String courseName = rs.getString("course_name");
+                String instructorName = rs.getString("instructor_name");
+                coursesWithInstructors.put(courseName, instructorName);
+            }
+        }
+        catch (SQLException e) {
+            System.out.println("Error retrieving student courses: " + e.getMessage());
+        }
+        return coursesWithInstructors;
+    }
+
+    public Map<String, String> getStudentGrades(String username){
+        Map<String, String> grades = new HashMap<>();
+        try (Connection conn = ds.getConnection()) {
+            String sql = "SELECT c.course_name, g.grade " +
+                    "FROM users u_student " +
+                    "JOIN enrollments e ON u_student.user_id = e.student_id " +
+                    "JOIN courses c ON e.course_id = c.course_id " +
+                    "JOIN grades g ON e.student_id = g.student_id AND e.course_id = g.course_id " +
+                    "WHERE u_student.username = ?";
+
+            PreparedStatement pStmt = conn.prepareStatement(sql);
+            pStmt.setString(1, username);
+            ResultSet rs = pStmt.executeQuery();
+
+            while (rs.next()) {
+                String courseName = rs.getString("course_name");
+                String grade = rs.getString("grade");
+                grades.put(courseName, grade);
+            }
+        }
+        catch (SQLException e) {
+            System.out.println("Error retrieving student grades: " + e.getMessage());
+        }
+        return grades;
+    }
+
+    public List<String> getInstructorCourses(String username) {
+        List<String> courses = new ArrayList<>();
+        try (Connection conn = ds.getConnection()) {
+            String sql = "SELECT c.course_name " +
+                    "FROM users u_instructor " +
+                    "JOIN courses c ON u_instructor.user_id = c.instructor_id " +
+                    "WHERE u_instructor.username = ?";
+
+            PreparedStatement pStmt = conn.prepareStatement(sql);
+            pStmt.setString(1, username);
+            ResultSet rs = pStmt.executeQuery();
+
+            while (rs.next()) {
+                String courseName = rs.getString("course_name");
+                courses.add(courseName);
+            }
+        }
+        catch (SQLException e) {
+            System.out.println("Error retrieving instructor courses: " + e.getMessage());
+        }
+        return courses;
     }
 
 

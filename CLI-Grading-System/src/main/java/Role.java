@@ -1,6 +1,6 @@
 public enum Role {
     ADMIN("admin"),
-    USER("user"),
+    STUDENT("student"),
     INSTRUCTOR("instructor");
 
     private String role;
