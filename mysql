@@ -1,0 +1,69 @@
+docker run -itd --name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123456 mysql
+
+docker exec -it mysql bash
+
+mysql -u root -p123456
+
+DROP DATABASE IF EXISTS grading_system;
+CREATE DATABASE grading_system;
+
+USE grading_system;
+
+CREATE TABLE users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('STUDENT', 'INSTRUCTOR', 'ADMIN') NOT NULL
+);
+
+CREATE TABLE courses (
+    course_id INT AUTO_INCREMENT PRIMARY KEY,
+    course_name VARCHAR(200) NOT NULL,
+    instructor_id INT NOT NULL,
+    FOREIGN KEY (instructor_id) REFERENCES users(user_id)
+);
+
+CREATE TABLE enrollments (
+    student_id INT NOT NULL,
+    course_id INT NOT NULL,
+    PRIMARY KEY (student_id, course_id),
+    FOREIGN KEY (student_id) REFERENCES users(user_id),
+    FOREIGN KEY (course_id) REFERENCES courses(course_id)
+);
+
+CREATE TABLE grades (
+    grade_id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT NOT NULL,
+    course_id INT NOT NULL,
+    grade DECIMAL(5,2) NOT NULL,
+    FOREIGN KEY (student_id, course_id) REFERENCES enrollments(student_id, course_id)
+);
+
+INSERT INTO users (username, password, role) VALUES 
+('Hamza', 'hashed_password_hamza', 'ADMIN'),
+('Ruzain', 'hashed_password_ruzain', 'INSTRUCTOR'),
+('Mostafa', 'hashed_password_mostafa', 'INSTRUCTOR'),
+('Michael', 'hashed_password_michael', 'STUDENT'),
+('Motassem', 'hashed_password_motassem', 'STUDENT'),
+('Bilal', 'hashed_password_bilal', 'STUDENT');
+
+INSERT INTO courses (course_name, instructor_id) VALUES 
+('Introduction to Computer Science', 2),
+('Advanced Mathematics', 3),
+('C++ Programming', 3);
+
+INSERT INTO enrollments (student_id, course_id) VALUES 
+(4, 1),
+(4, 2),
+(5, 1),
+(5, 3),
+(6, 2),
+(6, 3);
+
+INSERT INTO grades (student_id, course_id, grade) VALUES 
+(4, 1, 92.5),
+(4, 2, 88.0),
+(5, 1, 85.5),
+(5, 3, 79.0),
+(6, 2, 91.5),
+(6, 3, 86.5);
