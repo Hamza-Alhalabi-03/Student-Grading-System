@@ -123,6 +123,53 @@ public class GradingSystemDAO {
         return courses;
     }
 
+    public Map<String, String> getCourseGrades(String courseName) {
+        Map<String, String> grades = new HashMap<>();
+        try (Connection conn = ds.getConnection()) {
+            String sql = "SELECT u_student.username AS student_name, g.grade " +
+                    "FROM users u_student " +
+                    "JOIN enrollments e ON u_student.user_id = e.student_id " +
+                    "JOIN courses c ON e.course_id = c.course_id " +
+                    "JOIN grades g ON e.student_id = g.student_id AND e.course_id = g.course_id " +
+                    "WHERE c.course_name = ?";
+
+            PreparedStatement pStmt = conn.prepareStatement(sql);
+            pStmt.setString(1, courseName);
+            ResultSet rs = pStmt.executeQuery();
+
+            while (rs.next()) {
+                String studentName = rs.getString("student_name");
+                String grade = rs.getString("grade");
+                grades.put(studentName, grade);
+            }
+        }
+        catch (SQLException e) {
+            System.out.println("Error retrieving course grades: " + e.getMessage());
+        }
+        return grades;
+    }
+
+    public boolean updateStudentGrade(String courseName, String studentName, String newGrade) {
+        try (Connection conn = ds.getConnection()) {
+            String sql = "UPDATE grades g " +
+                    "JOIN users u_student ON g.student_id = u_student.user_id " +
+                    "JOIN courses c ON g.course_id = c.course_id " +
+                    "SET g.grade = ? " +
+                    "WHERE c.course_name = ? AND u_student.username = ?";
+
+            PreparedStatement pStmt = conn.prepareStatement(sql);
+            pStmt.setString(1, newGrade);
+            pStmt.setString(2, courseName);
+            pStmt.setString(3, studentName);
+            int rowsUpdated = pStmt.executeUpdate();
+            return rowsUpdated > 0;
+        }
+        catch (SQLException e) {
+            System.out.println("Error updating student grade: " + e.getMessage());
+            return false;
+        }
+    }
+
 
     public  void removeItem(int itemId) throws SQLException {
         Connection conn = ds.getConnection();

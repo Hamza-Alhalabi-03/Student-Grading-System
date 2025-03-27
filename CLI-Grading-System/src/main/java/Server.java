@@ -102,7 +102,9 @@ public class Server {
 
         private void logoutMenu(BufferedReader in, PrintWriter out) throws IOException {
             out.println("Logging out...\n");
+            String username = user.getUsername();
             user = null;
+            System.out.println("User " + username + " logged out.");
             out.println("You have been logged out.\n");
         }
 
@@ -197,25 +199,39 @@ public class Server {
                     case "2":
                         out.println("Please enter the course name:");
                         String courseName = in.readLine();
-                        Map<String, String> courseGrades = dao.getCourseGrades(user.getUsername());
-                        if (coursesWithGrades.isEmpty()) {
-                            out.println("No courses or grades found.");
+                        Map<String, String> courseGrades = dao.getCourseGrades(courseName);
+                        if (courseGrades.isEmpty()) {
+                            out.println("No students or grades found.");
                         }
                         else {
-                            out.println("\nStudent Grades:");
-                            out.println("+--------------------------------+-----------------------+");
-                            out.println("| Course Name                    | Grade                |");
-                            out.println("+--------------------------------+-----------------------+");
+                            out.println("\nCourse Grades:");
+                            out.println("+----------------------+-----------------------+");
+                            out.println("| Student Name         | Grade                |");
+                            out.println("+----------------------+-----------------------+");
 
-                            for (Map.Entry<String, String> entry : coursesWithGrades.entrySet()) {
-                                out.printf("| %-30s | %-20s |\n",
-                                        truncateString(entry.getKey(), 30),
+                            for (Map.Entry<String, String> entry : courseGrades.entrySet()) {
+                                out.printf("| %-20s | %-20s |\n",
+                                        truncateString(entry.getKey(), 20),
                                         truncateString(entry.getValue(), 20));
                             }
-                            out.println("+--------------------------------+-----------------------+");
+                            out.println("+----------------------+-----------------------+");
                         }
                         break;
                     case "3":
+                        out.println("Please enter the course name:");
+                        String courseNameForGrade = in.readLine();
+                        out.println("Please enter the student username:");
+                        String studentUsername = in.readLine();
+                        out.println("Please enter the new grade:");
+                        String newGrade = in.readLine();
+                        boolean isUpdated = dao.updateStudentGrade(courseNameForGrade, studentUsername, newGrade);
+                        if (isUpdated){
+                            out.println("Grade updated successfully.");
+                        } else {
+                            out.println("Failed to update grade. Please check the course name and student username.");
+                        }
+                        break;
+                    case "4":
                         logoutMenu(in, out);
                         return;
                     default:
