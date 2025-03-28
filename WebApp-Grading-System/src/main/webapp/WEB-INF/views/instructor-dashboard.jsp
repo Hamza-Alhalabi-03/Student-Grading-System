@@ -17,6 +17,7 @@
                     <li><a href="${pageContext.request.contextPath}/instructor/courses">View Courses</a></li>
                     <li><a href="${pageContext.request.contextPath}/instructor/courseGrades">View Course Grades</a></li>
                     <li><a href="${pageContext.request.contextPath}/instructor/editGrade">Edit Student Grade</a></li>
+                    <li><a href="${pageContext.request.contextPath}/instructor/statistics">View Course Statistics</a></li>
                     <li><a href="${pageContext.request.contextPath}/logout">Logout</a></li>
                 </ul>
             </div>
@@ -163,6 +164,25 @@
                             <td>Median Grade</td>
                             <td>${statistics.medianGrade}</td>
                         </tr>
+                    </table>
+                </c:if>
+
+                <!-- 4. Course Statistics - Course Selection -->
+                <c:if test="${operation eq 'selectCourseForStatistics' && not empty courses}">
+                    <h4>Select Course to View Statistics</h4>
+                    <table>
+                        <tr>
+                            <th>Course Name</th>
+                            <th>Action</th>
+                        </tr>
+                        <c:forEach var="course" items="${courses}">
+                            <tr>
+                                <td>${course}</td>
+                                <td>
+                                    <a href="${pageContext.request.contextPath}/instructor/statistics?course=${course}">View Statistics</a>
+                                </td>
+                            </tr>
+                        </c:forEach>
                     </table>
                 </c:if>
             </div>

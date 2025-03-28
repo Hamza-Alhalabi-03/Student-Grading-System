@@ -39,6 +39,8 @@ public class StudentController extends BaseController {
             viewCourses(request, response, username);
         } else if (pathInfo.equals("/grades")) {
             viewGrades(request, response, username);
+        } else if (pathInfo.equals("/statistics")) {
+            viewCourseStatistics(request, response, username);
         } else {
             // Invalid path, redirect to default
             response.sendRedirect(request.getContextPath() + "/student");
@@ -67,6 +69,30 @@ public class StudentController extends BaseController {
         Map<String, String> grades = gradingDAO.getStudentGrades(username);
         request.setAttribute("grades", grades);
         request.setAttribute("operation", "viewGrades");
+        
+        request.getRequestDispatcher("/WEB-INF/views/student-dashboard.jsp").forward(request, response);
+    }
+    
+    /**
+     * Displays the statistics for a specific course or shows course selection
+     */
+    private void viewCourseStatistics(HttpServletRequest request, HttpServletResponse response, String username)
+            throws ServletException, IOException {
+        
+        String courseName = request.getParameter("course");
+        
+        if (courseName != null && !courseName.trim().isEmpty()) {
+            // View statistics for specific course
+            Map<String, String> statistics = gradingDAO.getCourseStatistics(courseName);
+            request.setAttribute("selectedCourse", courseName);
+            request.setAttribute("statistics", statistics);
+            request.setAttribute("operation", "viewCourseStatistics");
+        } else {
+            // Show course selection
+            Map<String, String> courses = gradingDAO.getStudentCourses(username);
+            request.setAttribute("courses", courses);
+            request.setAttribute("operation", "selectCourseForStatistics");
+        }
         
         request.getRequestDispatcher("/WEB-INF/views/student-dashboard.jsp").forward(request, response);
     }

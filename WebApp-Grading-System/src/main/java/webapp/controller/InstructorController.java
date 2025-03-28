@@ -33,6 +33,8 @@ public class InstructorController extends BaseController {
             viewCourseGrades(request, response, username);
         } else if (pathInfo.equals("/editGrade")) {
             editStudentGrade(request, response, username);
+        } else if (pathInfo.equals("/statistics")) {
+            viewCourseStatistics(request, response, username);
         } else {
             // Invalid path, redirect to default
             response.sendRedirect(request.getContextPath() + "/instructor");
@@ -160,5 +162,29 @@ public class InstructorController extends BaseController {
         // Redirect back to view course grades
         response.sendRedirect(request.getContextPath() + 
                 "/instructor/courseGrades?course=" + courseName);
+    }
+    
+    /**
+     * Displays the statistics for a specific course or shows course selection
+     */
+    private void viewCourseStatistics(HttpServletRequest request, HttpServletResponse response, String username)
+            throws ServletException, IOException {
+        
+        String courseName = request.getParameter("course");
+        
+        if (courseName != null && !courseName.trim().isEmpty()) {
+            // View statistics for specific course
+            Map<String, String> statistics = gradingDAO.getCourseStatistics(courseName);
+            request.setAttribute("selectedCourse", courseName);
+            request.setAttribute("statistics", statistics);
+            request.setAttribute("operation", "viewCourseStatistics");
+        } else {
+            // Show course selection
+            List<String> instructorCourses = gradingDAO.getInstructorCourses(username);
+            request.setAttribute("courses", instructorCourses);
+            request.setAttribute("operation", "selectCourseForStatistics");
+        }
+        
+        request.getRequestDispatcher("/WEB-INF/views/instructor-dashboard.jsp").forward(request, response);
     }
 } 
