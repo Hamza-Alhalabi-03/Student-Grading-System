@@ -11,7 +11,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 @WebServlet("/login")
-public class LoginTestServlet extends HttpServlet {
+public class LoginServlet extends HttpServlet {
     private GradingSystemDAO gradingDAO;
 
     public void init() {
@@ -21,7 +21,7 @@ public class LoginTestServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("/WEB-INF/views/login-test.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(request, response);
     }
 
     @Override
@@ -40,10 +40,10 @@ public class LoginTestServlet extends HttpServlet {
             session.setAttribute("username", username);
 
             // Redirect to welcome servlet
-            response.sendRedirect(request.getContextPath() + "/welcome");
+            response.sendRedirect(request.getContextPath() + "/dashboard");
         } else {
             request.setAttribute("errorMessage", "Invalid username or password");
-            request.getRequestDispatcher("/WEB-INF/views/login-test.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(request, response);
         }
     }
 }

@@ -22,6 +22,6 @@ public class WelcomeTestServlet extends HttpServlet {
         }
 
         // Forward to welcome page
-        request.getRequestDispatcher("/WEB-INF/views/welcome-test.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/welcome.jsp").forward(request, response);
     }
 }
