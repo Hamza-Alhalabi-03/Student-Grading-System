@@ -91,14 +91,14 @@
         <div class="menu">
             <h3>Menu</h3>
             <ul>
-                <li><a href="dashboard?operation=addStudent">1. Add Student</a></li>
-                <li><a href="dashboard?operation=deleteStudent">2. Delete Student</a></li>
-                <li><a href="dashboard?operation=addInstructor">3. Add Instructor</a></li>
-                <li><a href="dashboard?operation=deleteInstructor">4. Delete Instructor</a></li>
-                <li><a href="dashboard?operation=addCourse">5. Add Course</a></li>
-                <li><a href="dashboard?operation=viewAllUsers">6. View All Users</a></li>
-                <li><a href="dashboard?operation=viewAllCourses">7. View All Courses</a></li>
-                <li><a href="logout">8. Logout</a></li>
+                <li><a href="${pageContext.request.contextPath}/admin/addStudent">1. Add Student</a></li>
+                <li><a href="${pageContext.request.contextPath}/admin/deleteStudent">2. Delete Student</a></li>
+                <li><a href="${pageContext.request.contextPath}/admin/addInstructor">3. Add Instructor</a></li>
+                <li><a href="${pageContext.request.contextPath}/admin/deleteInstructor">4. Delete Instructor</a></li>
+                <li><a href="${pageContext.request.contextPath}/admin/addCourse">5. Add Course</a></li>
+                <li><a href="${pageContext.request.contextPath}/admin/users">6. View All Users</a></li>
+                <li><a href="${pageContext.request.contextPath}/admin/courses">7. View All Courses</a></li>
+                <li><a href="${pageContext.request.contextPath}/logout">8. Logout</a></li>
             </ul>
         </div>
         
@@ -117,8 +117,7 @@
             <!-- Add Student Form -->
             <c:if test="${operation eq 'addStudent'}">
                 <h4>Add Student</h4>
-                <form action="dashboard" method="post">
-                    <input type="hidden" name="operation" value="addStudent">
+                <form action="${pageContext.request.contextPath}/admin/addStudent" method="post">
                     <label for="username">Username:</label>
                     <input type="text" id="username" name="username" required>
                     
@@ -145,7 +144,7 @@
                             <tr>
                                 <td>${student.key}</td>
                                 <td>
-                                    <a href="dashboard?operation=deleteStudent&username=${student.key}" class="action-button"
+                                    <a href="${pageContext.request.contextPath}/admin/deleteStudent?username=${student.key}" class="action-button"
                                        onclick="return confirm('Are you sure you want to delete this student?')">Delete</a>
                                 </td>
                             </tr>
@@ -157,8 +156,7 @@
             <!-- Add Instructor Form -->
             <c:if test="${operation eq 'addInstructor'}">
                 <h4>Add Instructor</h4>
-                <form action="dashboard" method="post">
-                    <input type="hidden" name="operation" value="addInstructor">
+                <form action="${pageContext.request.contextPath}/admin/addInstructor" method="post">
                     <label for="username">Username:</label>
                     <input type="text" id="username" name="username" required>
                     
@@ -185,7 +183,7 @@
                             <tr>
                                 <td>${instructor.key}</td>
                                 <td>
-                                    <a href="dashboard?operation=deleteInstructor&username=${instructor.key}" class="action-button"
+                                    <a href="${pageContext.request.contextPath}/admin/deleteInstructor?username=${instructor.key}" class="action-button"
                                        onclick="return confirm('Are you sure you want to delete this instructor?')">Delete</a>
                                 </td>
                             </tr>
@@ -197,13 +195,13 @@
             <!-- Add Course Form -->
             <c:if test="${operation eq 'addCourse' || param.section eq 'courses'}">
                 <h4>Add Course</h4>
-                <form action="dashboard" method="post">
-                    <input type="hidden" name="operation" value="addCourse">
+                <form action="${pageContext.request.contextPath}/admin/addCourse" method="post">
                     <label for="courseName">Course Name:</label>
                     <input type="text" id="courseName" name="courseName" required>
                     
                     <label for="instructorName">Instructor:</label>
                     <select id="instructorName" name="instructorName" required>
+                        <option value="">Select an instructor</option>
                         <c:forEach var="instructor" items="${instructors}">
                             <option value="${instructor.key}">${instructor.key}</option>
                         </c:forEach>
@@ -214,58 +212,37 @@
             </c:if>
             
             <!-- View All Users -->
-            <c:if test="${operation eq 'viewAllUsers' || not empty users}">
+            <c:if test="${operation eq 'viewAllUsers' && not empty users}">
                 <h4>All Users</h4>
-                <c:if test="${empty users}">
-                    <p>No users found.</p>
-                </c:if>
-                <c:if test="${not empty users}">
-                    <table>
+                <table>
+                    <tr>
+                        <th>Username</th>
+                        <th>Role</th>
+                    </tr>
+                    <c:forEach var="user" items="${users}">
                         <tr>
-                            <th>Username</th>
-                            <th>Role</th>
-                            <th>Actions</th>
+                            <td>${user.key}</td>
+                            <td>${user.value}</td>
                         </tr>
-                        <c:forEach var="user" items="${users}">
-                            <tr>
-                                <td>${user.key}</td>
-                                <td>${user.value}</td>
-                                <td>
-                                    <c:if test="${user.value eq 'student'}">
-                                        <a href="dashboard?operation=deleteStudent&username=${user.key}" class="action-button"
-                                           onclick="return confirm('Are you sure you want to delete this student?')">Delete</a>
-                                    </c:if>
-                                    <c:if test="${user.value eq 'instructor'}">
-                                        <a href="dashboard?operation=deleteInstructor&username=${user.key}" class="action-button"
-                                           onclick="return confirm('Are you sure you want to delete this instructor?')">Delete</a>
-                                    </c:if>
-                                </td>
-                            </tr>
-                        </c:forEach>
-                    </table>
-                </c:if>
+                    </c:forEach>
+                </table>
             </c:if>
             
             <!-- View All Courses -->
-            <c:if test="${operation eq 'viewAllCourses' || not empty courses}">
+            <c:if test="${operation eq 'viewAllCourses' && not empty courses}">
                 <h4>All Courses</h4>
-                <c:if test="${empty courses}">
-                    <p>No courses found.</p>
-                </c:if>
-                <c:if test="${not empty courses}">
-                    <table>
+                <table>
+                    <tr>
+                        <th>Course Name</th>
+                        <th>Instructor</th>
+                    </tr>
+                    <c:forEach var="course" items="${courses}">
                         <tr>
-                            <th>Course Name</th>
-                            <th>Instructor</th>
+                            <td>${course.key}</td>
+                            <td>${course.value}</td>
                         </tr>
-                        <c:forEach var="course" items="${courses}">
-                            <tr>
-                                <td>${course.key}</td>
-                                <td>${course.value}</td>
-                            </tr>
-                        </c:forEach>
-                    </table>
-                </c:if>
+                    </c:forEach>
+                </table>
             </c:if>
         </div>
     </div>

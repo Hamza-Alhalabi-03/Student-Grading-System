@@ -3,32 +3,34 @@
 <html>
 <head>
     <title>Login Page</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/styles.css">
 </head>
 <body>
-    <h2>Login</h2>
+    <div class="container">
+        <h2>Login</h2>
 
-    <%-- Error message display --%>
-    <%
-    String errorMessage = (String) request.getAttribute("errorMessage");
-    if (errorMessage != null) {
-    %>
-        <p style="color: red;"><%= errorMessage %></p>
-    <% } %>
+        <%
+        String errorMessage = (String) request.getAttribute("errorMessage");
+        if (errorMessage != null) {
+        %>
+            <p class="error-message"><%= errorMessage %></p>
+        <% } %>
 
-    <form action="login" method="post">
-        <table>
-            <tr>
-                <td>Username:</td>
-                <td><input type="text" name="username" required></td>
-            </tr>
-            <tr>
-                <td>Password:</td>
-                <td><input type="password" name="password" required></td>
-            </tr>
-            <tr>
-                <td colspan="2"><input type="submit" value="Login"></td>
-            </tr>
-        </table>
-    </form>
+        <form action="login" method="post">
+            <table>
+                <tr>
+                    <td>Username:</td>
+                    <td><input type="text" name="username" required></td>
+                </tr>
+                <tr>
+                    <td>Password:</td>
+                    <td><input type="password" name="password" required></td>
+                </tr>
+                <tr>
+                    <td colspan="2"><input type="submit" value="Login"></td>
+                </tr>
+            </table>
+        </form>
+    </div>
 </body>
 </html>

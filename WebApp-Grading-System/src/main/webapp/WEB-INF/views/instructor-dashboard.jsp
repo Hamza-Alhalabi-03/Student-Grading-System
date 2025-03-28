@@ -81,10 +81,10 @@
         <div class="menu">
             <h3>Menu</h3>
             <ul>
-                <li><a href="dashboard?operation=viewCourses">1. View Courses</a></li>
-                <li><a href="dashboard?operation=viewCourseGrades">2. View Course Grades</a></li>
-                <li><a href="dashboard?operation=editStudentGrade">3. Edit Student Grade</a></li>
-                <li><a href="logout">4. Logout</a></li>
+                <li><a href="${pageContext.request.contextPath}/instructor/courses">1. View Courses</a></li>
+                <li><a href="${pageContext.request.contextPath}/instructor/courseGrades">2. View Course Grades</a></li>
+                <li><a href="${pageContext.request.contextPath}/instructor/editGrade">3. Edit Student Grade</a></li>
+                <li><a href="${pageContext.request.contextPath}/logout">4. Logout</a></li>
             </ul>
         </div>
         
@@ -127,7 +127,7 @@
                         <tr>
                             <td>${course}</td>
                             <td>
-                                <a href="dashboard?operation=viewCourseGrades&course=${course}">View Grades</a>
+                                <a href="${pageContext.request.contextPath}/instructor/courseGrades?course=${course}">View Grades</a>
                             </td>
                         </tr>
                     </c:forEach>
@@ -163,7 +163,7 @@
                         <tr>
                             <td>${course}</td>
                             <td>
-                                <a href="dashboard?operation=editStudentGrade&course=${course}">Edit Grades</a>
+                                <a href="${pageContext.request.contextPath}/instructor/editGrade?course=${course}">Edit Grades</a>
                             </td>
                         </tr>
                     </c:forEach>
@@ -184,7 +184,7 @@
                             <td>${grade.key}</td>
                             <td>${grade.value}</td>
                             <td>
-                                <a href="dashboard?operation=editStudentGrade&course=${selectedCourse}&student=${grade.key}">Edit</a>
+                                <a href="${pageContext.request.contextPath}/instructor/editGrade?course=${selectedCourse}&student=${grade.key}">Edit</a>
                             </td>
                         </tr>
                     </c:forEach>
@@ -194,8 +194,7 @@
             <!-- 3. Edit Student Grade - Edit Form -->
             <c:if test="${operation eq 'editGradeForm' && not empty selectedCourse && not empty selectedStudent}">
                 <h4>Edit Grade for ${selectedStudent} in ${selectedCourse}</h4>
-                <form action="dashboard" method="post">
-                    <input type="hidden" name="operation" value="updateGrade">
+                <form action="${pageContext.request.contextPath}/instructor/updateGrade" method="post">
                     <input type="hidden" name="course" value="${selectedCourse}">
                     <input type="hidden" name="student" value="${selectedStudent}">
                     <label for="newGrade">New Grade:</label>
