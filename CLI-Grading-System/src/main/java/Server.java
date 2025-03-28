@@ -57,7 +57,7 @@ public class Server {
                             instructorMenu(in, out);
                             break;
                         case ADMIN:
-                            out.println("Welcome " + user.getUsername() + ",\nAdmin Grading System Menu:");
+                            out.println("Welcome " + user.getUsername() + ",");
                             adminMenu(in, out);
                             break;
                     }
@@ -241,10 +241,83 @@ public class Server {
         }
 
         private void adminMenu(BufferedReader in, PrintWriter out) throws IOException {
-            // Implement admin-specific menu options here
-            out.println("Admin Menu: 1. Manage Users 2. View Reports");
-            String inputLine = in.readLine();
-            // Process admin menu input
+            while (true) {
+                out.println("Admin Grading System Menu:");
+                out.println("1. Add Student");
+                out.println("2. Add Instructor");
+                out.println("3. Add Course");
+                out.println("4. View All Users");
+                out.println("5. View All Courses");
+                out.println("6. Logout");
+                out.println("Please select an option:");
+                String inputLine = in.readLine();
+                switch (inputLine) {
+                    case "1" :
+                        out.println("Please enter the student name:");
+                        String studentName = in.readLine();
+                        out.println("Please enter the password:");
+                        String studentPassword = in.readLine();
+                        boolean isAdded = dao.addUser(studentName, studentPassword, Role.STUDENT);
+                        if (isAdded) {
+                            out.println("Student added successfully.");
+                        } else {
+                            out.println("Failed to add student. Please try again.");
+                        }
+                        break;
+                    case "2":
+                        out.println("Please enter the instructor name:");
+                        String instructorName = in.readLine();
+                        out.println("Please enter the password:");
+                        String instructorPassword = in.readLine();
+                        boolean isInstructorAdded = dao.addUser(instructorName, instructorPassword, Role.INSTRUCTOR);
+                        if (isInstructorAdded) {
+                            out.println("Instructor added successfully.");
+                        } else {
+                            out.println("Failed to add instructor. Please try again.");
+                        }
+                        break;
+                    case "7":
+                        out.println("Please enter the course name:");
+                        String courseName = in.readLine();
+                        Map<String, String> courseGrades = dao.getCourseGrades(courseName);
+                        if (courseGrades.isEmpty()) {
+                            out.println("No students or grades found.");
+                        }
+                        else {
+                            out.println("\nCourse Grades:");
+                            out.println("+----------------------+-----------------------+");
+                            out.println("| Student Name         | Grade                |");
+                            out.println("+----------------------+-----------------------+");
+
+                            for (Map.Entry<String, String> entry : courseGrades.entrySet()) {
+                                out.printf("| %-20s | %-20s |\n",
+                                        truncateString(entry.getKey(), 20),
+                                        truncateString(entry.getValue(), 20));
+                            }
+                            out.println("+----------------------+-----------------------+");
+                        }
+                        break;
+                    case "3":
+                        out.println("Please enter the course name:");
+                        String courseNameForGrade = in.readLine();
+                        out.println("Please enter the student username:");
+                        String studentUsername = in.readLine();
+                        out.println("Please enter the new grade:");
+                        String newGrade = in.readLine();
+                        boolean isUpdated = dao.updateStudentGrade(courseNameForGrade, studentUsername, newGrade);
+                        if (isUpdated){
+                            out.println("Grade updated successfully.");
+                        } else {
+                            out.println("Failed to update grade. Please check the course name and student username.");
+                        }
+                        break;
+                    case "4":
+                        logoutMenu(in, out);
+                        return;
+                    default:
+                        out.println("Invalid option. Please try again.");
+                }
+            }
         }
 
 

@@ -170,6 +170,23 @@ public class GradingSystemDAO {
         }
     }
 
+    public boolean addUser(String username, String password, Role role) {
+        try (Connection conn = ds.getConnection()) {
+            String sql = "INSERT INTO users (username, password, role) VALUES (?, ?, ?)";
+            PreparedStatement pStmt = conn.prepareStatement(sql);
+            pStmt.setString(1, username);
+            pStmt.setString(2, password);
+            pStmt.setString(3, role.toString());
+            int rowsInserted = pStmt.executeUpdate();
+            return rowsInserted > 0;
+        }
+        catch (SQLException e) {
+            System.out.println("Error adding user: " + e.getMessage());
+            return false;
+        }
+    }
+
+    
 
     public  void removeItem(int itemId) throws SQLException {
         Connection conn = ds.getConnection();
