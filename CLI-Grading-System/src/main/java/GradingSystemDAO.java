@@ -186,104 +186,74 @@ public class GradingSystemDAO {
         }
     }
 
-    
-
-    public  void removeItem(int itemId) throws SQLException {
-        Connection conn = ds.getConnection();
-        System.out.println("Remove Item");
-        System.out.println("Which item would you like to remove?");
-        //String itemId = sc.nextLine();
-
-
-            String sql = "DELETE FROM todo WHERE id = ?";
-            PreparedStatement pStmt = conn.prepareCall(sql);
-            pStmt.setString(1, itemId + "");
-            pStmt.executeUpdate();
-            System.out.println("Remove Complete");
-
-    }
-
-    public void displayList() throws SQLException {
-        try ( Connection conn = ds.getConnection()) {
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM todo");
-            while (rs.next()) {
-                System.out.printf("%s: %s -- %s -- %s\n",
-                        rs.getString("id"),
-                        rs.getString("todo"),
-                        rs.getString("note"),
-                        rs.getBoolean("finished"));
-            }
-            System.out.println("");
-        }
-    }
-
-    public  void addItem(String task, String note) throws SQLException {
-
-
+    public boolean deleteUser(String username) {
         try (Connection conn = ds.getConnection()) {
-            String sql = "INSERT INTO todo(todo, note) VALUES(?,?)";
-            PreparedStatement pStmt = conn.prepareCall(sql);
-            pStmt.setString(1, task);
-            pStmt.setString(2, note);
-            pStmt.executeUpdate();
-            System.out.println("Add Complete");
+            String sql = "DELETE FROM users WHERE username = ?";
+            PreparedStatement pStmt = conn.prepareStatement(sql);
+            pStmt.setString(1, username);
+            int rowsDeleted = pStmt.executeUpdate();
+            return rowsDeleted > 0;
+        }
+        catch (SQLException e) {
+            System.out.println("Error deleting user: " + e.getMessage());
+            return false;
         }
     }
 
-    public  void updateItem(Scanner sc) throws SQLException {
-        System.out.println("Update Item");
-        System.out.println("Which item do you want to update?");
-        String itemId = sc.nextLine();
-        try( Connection conn = ds.getConnection()) {
-            String sql = "SELECT * FROM todo WHERE id = ?";
-            PreparedStatement pStmt = conn.prepareCall(sql);
-            pStmt.setString(1, itemId);
+    public boolean addCourse(String courseName, String instructorName) {
+        try (Connection conn = ds.getConnection()) {
+            String sql = "INSERT INTO courses (course_name, instructor_id) " +
+                    "SELECT ?, user_id FROM users WHERE username = ?";
+            PreparedStatement pStmt = conn.prepareStatement(sql);
+            pStmt.setString(1, courseName);
+            pStmt.setString(2, instructorName);
+            int rowsInserted = pStmt.executeUpdate();
+            return rowsInserted > 0;
+        }
+        catch (SQLException e) {
+            System.out.println("Error adding course: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public Map<String, String> getUsers(){
+        Map<String, String> users = new HashMap<>();
+        try (Connection conn = ds.getConnection()) {
+            String sql = "SELECT username, role FROM users";
+            PreparedStatement pStmt = conn.prepareStatement(sql);
             ResultSet rs = pStmt.executeQuery();
-            rs.next();
-            ToDo td = new ToDo();
-            td.setId(rs.getInt("id"));
-            td.setTodo(rs.getString("todo"));
-            td.setNote(rs.getString("note"));
-            td.setFinished(rs.getBoolean("finished"));
 
-            System.out.println("1. ToDo - " + td.getTodo());
-            System.out.println("2. Note - " + td.getNote());
-            System.out.println("3. Finished - " + td.isFinished());
-            System.out.println("What would you like to change?");
-
-            String choice = sc.nextLine();
-            switch(choice) {
-                case "1":
-                    System.out.println("Enter new ToDo:");
-                    String todo = sc.nextLine();
-                    td.setTodo(todo);
-                    break;
-                case "2":
-                    System.out.println("Enter new Note:");
-                    String note = sc.nextLine();
-                    td.setNote(note);
-                    break;
-                case "3":
-                    System.out.println("Toggling Finished to " + !td.isFinished());
-                    td.setFinished(!td.isFinished());
-                    break;
-                default:
-                    System.out.println("No change made");
-                    return;
+            while (rs.next()) {
+                String username = rs.getString("username");
+                String role = rs.getString("role");
+                users.put(username, role);
             }
-
-
-            String updateSql = "UPDATE todo SET todo = ?, note = ?, finished = ? WHERE id = ?";
-            PreparedStatement updatePStmt = conn.prepareCall(updateSql);
-            updatePStmt.setString(1, td.getTodo());
-            updatePStmt.setString(2, td.getNote());
-            updatePStmt.setBoolean(3, td.isFinished());
-            updatePStmt.setInt(4, td.getId());
-            updatePStmt.executeUpdate();
-            System.out.println("Update Complete");
         }
+        catch (SQLException e) {
+            System.out.println("Error retrieving users: " + e.getMessage());
+        }
+        return users;
     }
 
+    public Map<String, String> getCourses(){
+        Map<String, String> courses = new HashMap<>();
+        try (Connection conn = ds.getConnection()) {
+            String sql = "SELECT c.course_name, u.username AS instructor_name " +
+                    "FROM courses c " +
+                    "JOIN users u ON c.instructor_id = u.user_id";
+            PreparedStatement pStmt = conn.prepareStatement(sql);
+            ResultSet rs = pStmt.executeQuery();
+
+            while (rs.next()) {
+                String courseName = rs.getString("course_name");
+                String instructorName = rs.getString("instructor_name");
+                courses.put(courseName, instructorName);
+            }
+        }
+        catch (SQLException e) {
+            System.out.println("Error retrieving courses: " + e.getMessage());
+        }
+        return courses;
+    }
 
 }

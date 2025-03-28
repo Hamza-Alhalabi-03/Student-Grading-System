@@ -42,7 +42,6 @@ public class Server {
                     BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                     PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true)
             ) {
-                // Read client request
                 do {
                     while (user == null){
                         loginMenu(in, out);
@@ -67,12 +66,6 @@ public class Server {
                         System.out.println("Client disconnected: " + clientSocket.getInetAddress());
                         break;
                     }
-
-                    // Process the request (you can add your database logic here)
-                    String response = processClientRequest(inputLine);
-
-                    // Send response back to client
-                    out.println(response);
                 } while (true);
 
             } catch (IOException e) {
@@ -244,11 +237,13 @@ public class Server {
             while (true) {
                 out.println("Admin Grading System Menu:");
                 out.println("1. Add Student");
-                out.println("2. Add Instructor");
-                out.println("3. Add Course");
-                out.println("4. View All Users");
-                out.println("5. View All Courses");
-                out.println("6. Logout");
+                out.println("2. Delete Student");
+                out.println("3. Add Instructor");
+                out.println("4. Delete Instructor");
+                out.println("5. Add Course");
+                out.println("6. View All Users");
+                out.println("7. View All Courses");
+                out.println("8. Logout");
                 out.println("Please select an option:");
                 String inputLine = in.readLine();
                 switch (inputLine) {
@@ -257,14 +252,24 @@ public class Server {
                         String studentName = in.readLine();
                         out.println("Please enter the password:");
                         String studentPassword = in.readLine();
-                        boolean isAdded = dao.addUser(studentName, studentPassword, Role.STUDENT);
-                        if (isAdded) {
+                        boolean isUserAdded = dao.addUser(studentName, studentPassword, Role.STUDENT);
+                        if (isUserAdded) {
                             out.println("Student added successfully.");
                         } else {
                             out.println("Failed to add student. Please try again.");
                         }
                         break;
                     case "2":
+                        out.println("Please enter the student name:");
+                        String studentUsername = in.readLine();
+                        boolean isDeleted = dao.deleteUser(studentUsername);
+                        if (isDeleted) {
+                            out.println("Student deleted successfully.");
+                        } else {
+                            out.println("Failed to delete student. Please try again.");
+                        }
+                        break;
+                    case "3":
                         out.println("Please enter the instructor name:");
                         String instructorName = in.readLine();
                         out.println("Please enter the password:");
@@ -276,20 +281,40 @@ public class Server {
                             out.println("Failed to add instructor. Please try again.");
                         }
                         break;
-                    case "7":
+                    case "4":
+                        out.println("Please enter the instructor name:");
+                        String instructorUsername = in.readLine();
+                        boolean isRemoved = dao.deleteUser(instructorUsername);
+                        if (isRemoved) {
+                            out.println("Instructor deleted successfully.");
+                        } else {
+                            out.println("Failed to delete instructor. Please try again.");
+                        }
+                        break;
+                    case "5":
                         out.println("Please enter the course name:");
                         String courseName = in.readLine();
-                        Map<String, String> courseGrades = dao.getCourseGrades(courseName);
-                        if (courseGrades.isEmpty()) {
-                            out.println("No students or grades found.");
+                        out.println("Please enter the instructor username:");
+                        String courseInstructorUsername = in.readLine();
+                        boolean isCourseAdded = dao.addCourse(courseName, courseInstructorUsername);
+                        if (isCourseAdded) {
+                            out.println("Course added successfully.");
+                        } else {
+                            out.println("Failed to add course. Please try again.");
+                        }
+                        break;
+                    case "6":
+                        Map<String, String> usersWithRoles = dao.getUsers();
+                        if (usersWithRoles.isEmpty()) {
+                            out.println("No users found.");
                         }
                         else {
-                            out.println("\nCourse Grades:");
+                            out.println("\nSystem Users:");
                             out.println("+----------------------+-----------------------+");
-                            out.println("| Student Name         | Grade                |");
+                            out.println("| User Name            | Role                  |");
                             out.println("+----------------------+-----------------------+");
 
-                            for (Map.Entry<String, String> entry : courseGrades.entrySet()) {
+                            for (Map.Entry<String, String> entry : usersWithRoles.entrySet()) {
                                 out.printf("| %-20s | %-20s |\n",
                                         truncateString(entry.getKey(), 20),
                                         truncateString(entry.getValue(), 20));
@@ -297,39 +322,31 @@ public class Server {
                             out.println("+----------------------+-----------------------+");
                         }
                         break;
-                    case "3":
-                        out.println("Please enter the course name:");
-                        String courseNameForGrade = in.readLine();
-                        out.println("Please enter the student username:");
-                        String studentUsername = in.readLine();
-                        out.println("Please enter the new grade:");
-                        String newGrade = in.readLine();
-                        boolean isUpdated = dao.updateStudentGrade(courseNameForGrade, studentUsername, newGrade);
-                        if (isUpdated){
-                            out.println("Grade updated successfully.");
-                        } else {
-                            out.println("Failed to update grade. Please check the course name and student username.");
+                    case "7":
+                        Map<String, String> allCourses = dao.getCourses();
+                        if (allCourses.isEmpty()) {
+                            out.println("No courses found.");
+                        }
+                        else {
+                            out.println("\nSystem Courses:");
+                            out.println("+--------------------------------+-----------------------+");
+                            out.println("| Course Name                    | Instructor            |");
+                            out.println("+--------------------------------+-----------------------+");
+
+                            for (Map.Entry<String, String> entry : allCourses.entrySet()) {
+                                out.printf("| %-30s | %-20s |\n",
+                                        truncateString(entry.getKey(), 30),
+                                        truncateString(entry.getValue(), 20));
+                            }
+                            out.println("+----------------------+-----------------------+");
                         }
                         break;
-                    case "4":
+                    case "8":
                         logoutMenu(in, out);
                         return;
                     default:
                         out.println("Invalid option. Please try again.");
                 }
-            }
-        }
-
-
-        // Method to process client requests (customize as needed)
-        private String processClientRequest(String request) {
-            switch (request.trim().toUpperCase()) {
-                case "HELLO":
-                    return "Welcome to the Database Server!";
-                case "STATUS":
-                    return "Server is running normally";
-                default:
-                    return "Unknown command: " + request;
             }
         }
     }
