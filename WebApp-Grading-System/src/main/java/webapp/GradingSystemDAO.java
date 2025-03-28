@@ -258,4 +258,61 @@ public class GradingSystemDAO {
         return courses;
     }
 
+    public Map<String, String> getCourseStatistics(String courseName) {
+        Map<String, String> statistics = new HashMap<>();
+        try (Connection conn = ds.getConnection()) {
+            String sql = "WITH course_grades AS (" +
+                    "SELECT g.grade " +
+                    "FROM courses c " +
+                    "JOIN enrollments e ON c.course_id = e.course_id " +
+                    "JOIN grades g ON e.student_id = g.student_id AND e.course_id = g.course_id " +
+                    "WHERE c.course_name = ?" +
+                    "), grade_stats AS (" +
+                    "SELECT " +
+                    "    COUNT(*) AS total_students, " +
+                    "    AVG(grade) AS average_grade, " +
+                    "    MAX(grade) AS highest_grade, " +
+                    "    MIN(grade) AS lowest_grade, " +
+                    "    (" +
+                    "        SELECT grade " +
+                    "        FROM (" +
+                    "            SELECT grade, " +
+                    "            ROW_NUMBER() OVER (ORDER BY grade) AS row_num, " +
+                    "            COUNT(*) OVER () AS total_count " +
+                    "            FROM course_grades" +
+                    "        ) ranked " +
+                    "        WHERE row_num IN (FLOOR((total_count + 1) / 2), CEIL((total_count + 1) / 2))" +
+                    "        GROUP BY grade " +
+                    "        LIMIT 1" +
+                    "    ) AS median_grade " +
+                    "FROM course_grades" +
+                    ")";
+
+            String countSql = sql + " SELECT * FROM grade_stats";
+
+            PreparedStatement pStmt = conn.prepareStatement(countSql);
+            pStmt.setString(1, courseName);
+            ResultSet rs = pStmt.executeQuery();
+
+            if (rs.next()) {
+                int totalStudents = rs.getInt("total_students");
+                double averageGrade = rs.getDouble("average_grade");
+                double highestGrade = rs.getDouble("highest_grade");
+                double lowestGrade = rs.getDouble("lowest_grade");
+                double medianGrade = rs.getDouble("median_grade");
+
+                statistics.put("totalStudents", String.valueOf(totalStudents));
+                statistics.put("averageGrade", String.format("%.2f", averageGrade));
+                statistics.put("highestGrade", String.format("%.2f", highestGrade));
+                statistics.put("lowestGrade", String.format("%.2f", lowestGrade));
+                statistics.put("medianGrade", String.format("%.2f", medianGrade));
+            }
+        }
+        catch (SQLException e) {
+            System.out.println("Error retrieving course statistics: " + e.getMessage());
+            statistics.put("error", e.getMessage());
+        }
+        return statistics;
+    }
+
 }
