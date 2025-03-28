@@ -9,7 +9,7 @@ import java.util.*;
 public class GradingSystemDAO {
     private DataSource ds;
 
-    GradingSystemDAO(){
+    public GradingSystemDAO(){
         try{
             ds = getDataSource();
         }catch (Exception e){

@@ -1,5 +1,11 @@
 webapp\BasicServlet.class
-webapp\LoginServlet.class
-webapp\Todos.class
+webapp\controller\LoginTestServlet.class
+webapp\Test.class
 webapp\Todo.class
 webapp\LoginService.class
+webapp\LoginServlet.class
+webapp\Todos.class
+webapp\GradingSystemDAO.class
+webapp\User.class
+webapp\controller\LogoutTestServlet.class
+webapp\Role.class
