@@ -16,19 +16,16 @@ public class InstructorController extends BaseController {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        // Check authorization
         if (!checkAuthorization(request, response, "instructor")) {
             return;
         }
         
-        // Process any session messages
         processSessionMessages(request);
         
         String username = getUsername(request);
         String pathInfo = request.getPathInfo();
         
         if (pathInfo == null || pathInfo.equals("/")) {
-            // Default to view courses
             viewCourses(request, response, username);
         } else if (pathInfo.equals("/courses")) {
             viewCourses(request, response, username);
@@ -46,7 +43,6 @@ public class InstructorController extends BaseController {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        // Check authorization
         if (!checkAuthorization(request, response, "instructor")) {
             return;
         }
@@ -67,12 +63,10 @@ public class InstructorController extends BaseController {
     private void viewCourses(HttpServletRequest request, HttpServletResponse response, String username)
             throws ServletException, IOException {
         
-        // Fetch instructor courses
         List<String> courses = gradingDAO.getInstructorCourses(username);
         request.setAttribute("courses", courses);
         request.setAttribute("operation", "viewCourses");
         
-        // Forward to instructor dashboard
         request.getRequestDispatcher("/WEB-INF/views/instructor-dashboard.jsp").forward(request, response);
     }
     
@@ -85,19 +79,18 @@ public class InstructorController extends BaseController {
         String courseName = request.getParameter("course");
         
         if (courseName != null && !courseName.trim().isEmpty()) {
-            // Fetch grades for specific course
+
             Map<String, String> courseGrades = gradingDAO.getCourseGrades(courseName);
             request.setAttribute("selectedCourse", courseName);
             request.setAttribute("courseGrades", courseGrades);
             request.setAttribute("operation", "viewCourseGrades");
         } else {
-            // Show course selection
+
             List<String> instructorCourses = gradingDAO.getInstructorCourses(username);
             request.setAttribute("courses", instructorCourses);
             request.setAttribute("operation", "selectCourseForGrades");
         }
         
-        // Forward to instructor dashboard
         request.getRequestDispatcher("/WEB-INF/views/instructor-dashboard.jsp").forward(request, response);
     }
     

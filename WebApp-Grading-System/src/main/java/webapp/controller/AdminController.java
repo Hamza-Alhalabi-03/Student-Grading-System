@@ -137,7 +137,6 @@ public class AdminController extends BaseController {
     private void showAddCourseForm(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        // Fetch instructors for dropdown
         Map<String, String> users = gradingDAO.getUsers();
         Map<String, String> instructors = new HashMap<>();
         for (Map.Entry<String, String> entry : users.entrySet()) {
