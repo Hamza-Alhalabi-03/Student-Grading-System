@@ -36,10 +36,14 @@ public class LoginServlet extends HttpServlet {
             // 30 minutes session timeout
             session.setMaxInactiveInterval(30 * 60);
 
-            // Set the username attribute
+            // Get the User object
+            webapp.model.User user = gradingDAO.getUser(username, password);
+            
+            // Store user information in session
             session.setAttribute("username", username);
+            session.setAttribute("userRole", user.getRole().toString());
 
-            // Redirect to welcome servlet
+            // Redirect to dashboard servlet
             response.sendRedirect(request.getContextPath() + "/dashboard");
         } else {
             request.setAttribute("errorMessage", "Invalid username or password");

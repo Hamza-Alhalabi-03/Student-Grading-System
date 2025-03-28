@@ -5,4 +5,5 @@ webapp\model\Role.class
 webapp\controller\DashboardServlet.class
 webapp\controller\WelcomeTestServlet.class
 webapp\controller\LogoutServlet.class
+webapp\controller\StudentGradesController.class
 webapp\data\GradingSystemDAO.class
