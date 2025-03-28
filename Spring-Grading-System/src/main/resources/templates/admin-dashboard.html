@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+    <div class="container">
+        <h2 th:text="'Welcome, ' + ${session.username} + ' (Administrator)'"></h2>
+
+        <div class="clearfix">
+            <div class="menu">
+                <h3>Menu:</h3>
+                <ul>
+                    <li><a th:href="@{/admin/addStudent}">Add Student</a></li>
+                    <li><a th:href="@{/admin/deleteStudent}">Delete Student</a></li>
+                    <li><a th:href="@{/admin/addInstructor}">Add Instructor</a></li>
+                    <li><a th:href="@{/admin/deleteInstructor}">Delete Instructor</a></li>
+                    <li><a th:href="@{/admin/addCourse}">Add Course</a></li>
+                    <li><a th:href="@{/admin/users}">View All Users</a></li>
+                    <li><a th:href="@{/admin/courses}">View All Courses</a></li>
+                    <li><a th:href="@{/logout}">Logout</a></li>
+                </ul>
+            </div>
+
+            <div class="content">
+                <h3>Admin Dashboard</h3>
+                <p>Welcome to the admin dashboard. Select an option from the menu to perform administrative tasks.</p>
+
+                <!-- Display message/error if exists -->
+                <div class="success-message" th:if="${message}" th:text="${message}"></div>
+                <div class="error-message" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+                <!-- Add Student Form -->
+                <div th:if="${operation == 'addStudent'}">
+                    <h4>Add Student</h4>
+                    <form th:action="@{/admin/addStudent}" method="post">
+                        <label for="username">Username:</label>
+                        <input type="text" id="username" name="username" required>
+
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" name="password" required>
+
+                        <input type="submit" value="Add Student">
+                    </form>
+                </div>
+
+                <!-- Delete Student Selection -->
+                <div th:if="${operation == 'deleteStudent'}">
+                    <h4>Delete Student</h4>
+                    <p th:if="${#maps.isEmpty(students)}">No students found.</p>
+                    <table th:if="${!#maps.isEmpty(students)}">
+                        <tr>
+                            <th>Username</th>
+                            <th>Action</th>
+                        </tr>
+                        <tr th:each="student : ${students}">
+                            <td th:text="${student.key}"></td>
+                            <td>
+                                <a th:href="@{/admin/deleteStudent(username=${student.key})}" class="action-button"
+                                   onclick="return confirm('Are you sure you want to delete this student?')">Delete</a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Add Instructor Form -->
+                <div th:if="${operation == 'addInstructor'}">
+                    <h4>Add Instructor</h4>
+                    <form th:action="@{/admin/addInstructor}" method="post">
+                        <label for="username">Username:</label>
+                        <input type="text" id="username" name="username" required>
+
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" name="password" required>
+
+                        <input type="submit" value="Add Instructor">
+                    </form>
+                </div>
+
+                <!-- Delete Instructor Selection -->
+                <div th:if="${operation == 'deleteInstructor'}">
+                    <h4>Delete Instructor</h4>
+                    <p th:if="${#maps.isEmpty(instructors)}">No instructors found.</p>
+                    <table th:if="${!#maps.isEmpty(instructors)}">
+                        <tr>
+                            <th>Username</th>
+                            <th>Action</th>
+                        </tr>
+                        <tr th:each="instructor : ${instructors}">
+                            <td th:text="${instructor.key}"></td>
+                            <td>
+                                <a th:href="@{/admin/deleteInstructor(username=${instructor.key})}" class="action-button"
+                                   onclick="return confirm('Are you sure you want to delete this instructor?')">Delete</a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Add Course Form -->
+                <div th:if="${operation == 'addCourse' || param.section == 'courses'}">
+                    <h4>Add Course</h4>
+                    <form th:action="@{/admin/addCourse}" method="post">
+                        <label for="courseName">Course Name:</label>
+                        <input type="text" id="courseName" name="courseName" required>
+
+                        <label for="instructorName">Instructor:</label>
+                        <select id="instructorName" name="instructorName" required>
+                            <option value="">Select an instructor</option>
+                            <option th:each="instructor : ${instructors}" th:value="${instructor.key}" th:text="${instructor.key}"></option>
+                        </select>
+
+                        <input type="submit" value="Add Course">
+                    </form>
+                </div>
+
+                <!-- View All Users -->
+                <div th:if="${operation == 'viewAllUsers' && !#maps.isEmpty(users)}">
+                    <h4>All Users</h4>
+                    <table>
+                        <tr>
+                            <th>Username</th>
+                            <th>Role</th>
+                        </tr>
+                        <tr th:each="user : ${users}">
+                            <td th:text="${user.key}"></td>
+                            <td th:text="${user.value}"></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- View All Courses -->
+                <div th:if="${operation == 'viewAllCourses' && !#maps.isEmpty(courses)}">
+                    <h4>All Courses</h4>
+                    <table>
+                        <tr>
+                            <th>Course Name</th>
+                            <th>Instructor</th>
+                        </tr>
+                        <tr th:each="course : ${courses}">
+                            <td th:text="${course.key}"></td>
+                            <td th:text="${course.value}"></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

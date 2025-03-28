@@ -11,21 +11,18 @@
 	<groupId>com.example</groupId>
 	<artifactId>Grading-System</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>demo</name>
-	<description>Demo project for Spring Boot</description>
+	<name>Grading-System</name>
+	<description>Student Grading System</description>
+	<packaging>war</packaging>
 	<properties>
 		<java.version>17</java.version>
 	</properties>
 	<dependencies>
-
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-
-		<!--Spring Boot starter children. No versions needed.-->
 
 		<!--Enables and configures Spring MVC. -->
 		<dependency>
@@ -53,19 +50,30 @@
 			<scope>runtime</scope>
 		</dependency>
 
+		<!-- Thymeleaf dependencies -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.thymeleaf.extras</groupId>
+			<artifactId>thymeleaf-extras-springsecurity6</artifactId>
+		</dependency>
+	</dependencies>
 
-
-
-</dependencies>
-
-
-<build>
+	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
+		
+		<!-- Don't copy webapp files into classes as it confuses Spring Boot -->
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+		</resources>
 	</build>
-
 </project>
