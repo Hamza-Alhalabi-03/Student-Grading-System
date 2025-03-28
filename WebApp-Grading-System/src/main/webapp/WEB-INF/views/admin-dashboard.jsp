@@ -12,16 +12,16 @@
 
         <div class="clearfix">
             <div class="menu">
-                <h3>Menu</h3>
+                <h3>Menu:</h3>
                 <ul>
-                    <li><a href="${pageContext.request.contextPath}/admin/addStudent">1. Add Student</a></li>
-                    <li><a href="${pageContext.request.contextPath}/admin/deleteStudent">2. Delete Student</a></li>
-                    <li><a href="${pageContext.request.contextPath}/admin/addInstructor">3. Add Instructor</a></li>
-                    <li><a href="${pageContext.request.contextPath}/admin/deleteInstructor">4. Delete Instructor</a></li>
-                    <li><a href="${pageContext.request.contextPath}/admin/addCourse">5. Add Course</a></li>
-                    <li><a href="${pageContext.request.contextPath}/admin/users">6. View All Users</a></li>
-                    <li><a href="${pageContext.request.contextPath}/admin/courses">7. View All Courses</a></li>
-                    <li><a href="${pageContext.request.contextPath}/logout">8. Logout</a></li>
+                    <li><a href="${pageContext.request.contextPath}/admin/addStudent">Add Student</a></li>
+                    <li><a href="${pageContext.request.contextPath}/admin/deleteStudent">Delete Student</a></li>
+                    <li><a href="${pageContext.request.contextPath}/admin/addInstructor">Add Instructor</a></li>
+                    <li><a href="${pageContext.request.contextPath}/admin/deleteInstructor">Delete Instructor</a></li>
+                    <li><a href="${pageContext.request.contextPath}/admin/addCourse">Add Course</a></li>
+                    <li><a href="${pageContext.request.contextPath}/admin/users">View All Users</a></li>
+                    <li><a href="${pageContext.request.contextPath}/admin/courses">View All Courses</a></li>
+                    <li><a href="${pageContext.request.contextPath}/logout">Logout</a></li>
                 </ul>
             </div>
 

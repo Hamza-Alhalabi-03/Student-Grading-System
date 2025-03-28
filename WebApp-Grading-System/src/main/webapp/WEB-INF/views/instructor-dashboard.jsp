@@ -12,12 +12,12 @@
 
         <div class="clearfix">
             <div class="menu">
-                <h3>Menu</h3>
+                <h3>Menu:</h3>
                 <ul>
-                    <li><a href="${pageContext.request.contextPath}/instructor/courses">1. View Courses</a></li>
-                    <li><a href="${pageContext.request.contextPath}/instructor/courseGrades">2. View Course Grades</a></li>
-                    <li><a href="${pageContext.request.contextPath}/instructor/editGrade">3. Edit Student Grade</a></li>
-                    <li><a href="${pageContext.request.contextPath}/logout">4. Logout</a></li>
+                    <li><a href="${pageContext.request.contextPath}/instructor/courses">View Courses</a></li>
+                    <li><a href="${pageContext.request.contextPath}/instructor/courseGrades">View Course Grades</a></li>
+                    <li><a href="${pageContext.request.contextPath}/instructor/editGrade">Edit Student Grade</a></li>
+                    <li><a href="${pageContext.request.contextPath}/logout">Logout</a></li>
                 </ul>
             </div>
 

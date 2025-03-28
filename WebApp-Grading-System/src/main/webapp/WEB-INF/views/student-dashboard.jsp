@@ -11,11 +11,11 @@
         <h2>Welcome, <%= session.getAttribute("username") %></h2>
 
         <div class="menu">
-            <h3>Menu</h3>
+            <h3>Menu:</h3>
             <ul>
-                <li><a href="${pageContext.request.contextPath}/student/courses">1. View Courses</a></li>
-                <li><a href="${pageContext.request.contextPath}/student/grades">2. View Grades</a></li>
-                <li><a href="${pageContext.request.contextPath}/logout">3. Logout</a></li>
+                <li><a href="${pageContext.request.contextPath}/student/courses">View Courses</a></li>
+                <li><a href="${pageContext.request.contextPath}/student/grades">View Grades</a></li>
+                <li><a href="${pageContext.request.contextPath}/logout">Logout</a></li>
             </ul>
         </div>
 
