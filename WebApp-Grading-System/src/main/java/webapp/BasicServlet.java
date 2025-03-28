@@ -17,6 +17,8 @@ import java.util.stream.Collectors;
 public class BasicServlet extends HttpServlet {
 
     private static Gson GSON = new GsonBuilder().create();
+
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setStatus(200);

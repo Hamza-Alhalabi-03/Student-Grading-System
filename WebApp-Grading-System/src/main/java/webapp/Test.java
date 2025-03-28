@@ -1,5 +1,7 @@
 package webapp;
 
+import webapp.data.GradingSystemDAO;
+
 import java.util.Map;
 
 public class Test {

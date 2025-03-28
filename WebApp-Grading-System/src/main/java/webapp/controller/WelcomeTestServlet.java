@@ -8,21 +8,20 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-@WebServlet("/logout")
-public class LogoutTestServlet extends HttpServlet {
+@WebServlet("/welcome")
+public class WelcomeTestServlet extends HttpServlet {
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession(false);
 
-        if (session != null) {
-            // Remove all attributes
-            session.removeAttribute("username");
-
-            // Invalidate the session
-            session.invalidate();
+        // Check if user is logged in
+        if (session == null || session.getAttribute("username") == null) {
+            response.sendRedirect("/login");
+            return;
         }
 
-        // Redirect to login page
-        response.sendRedirect(request.getContextPath() + "/login");
+        // Forward to welcome page
+        request.getRequestDispatcher("/WEB-INF/views/welcome-test.jsp").forward(request, response);
     }
 }

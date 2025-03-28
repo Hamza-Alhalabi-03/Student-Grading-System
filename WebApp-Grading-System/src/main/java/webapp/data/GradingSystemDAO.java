@@ -1,6 +1,8 @@
-package webapp;
+package webapp.data;
 
 import com.mysql.cj.jdbc.MysqlDataSource;
+import webapp.model.Role;
+import webapp.model.User;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -313,6 +315,11 @@ public class GradingSystemDAO {
             statistics.put("error", e.getMessage());
         }
         return statistics;
+    }
+
+    public boolean validateUser(String username, String password){
+        User user = getUser(username, password);
+        return user != null;
     }
 
 }

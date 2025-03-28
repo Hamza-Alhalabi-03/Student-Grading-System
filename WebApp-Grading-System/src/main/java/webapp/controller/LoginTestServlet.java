@@ -1,6 +1,6 @@
 package webapp.controller;
 
-import webapp.GradingSystemDAO;
+import webapp.data.GradingSystemDAO;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,37 +18,32 @@ public class LoginTestServlet extends HttpServlet {
         gradingDAO = new GradingSystemDAO();
     }
 
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        request.getRequestDispatcher("/WEB-INF/views/login-test.jsp").forward(request, response);
+    }
+
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
 
-//        if (gradingDAO.validateUser(username, password)) {
-//            // Create a new session
-//            HttpSession session = request.getSession();
-//
-//            // Set session timeout (30 minutes of inactivity)
-//            session.setMaxInactiveInterval(30 * 60);
-//
-//            // Store user info in session (but not password!)
-//            session.setAttribute("username", username);
-//
-//            // Prevent session fixation by creating a new session
-//            request.getSession().invalidate();
-//            session = request.getSession(true);
-//
-//            // Redirect to welcome page
-//            response.sendRedirect("welcome.jsp");
-//        } else {
-//            // Set error message
-//            request.setAttribute("errorMessage", "Invalid username or password");
-//            request.getRequestDispatcher("login.jsp").forward(request, response);
-//        }
-    }
+        if (gradingDAO.validateUser(username, password)) {
+            HttpSession session = request.getSession(true);
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        // Redirect GET requests to login page
-        request.getRequestDispatcher("login.jsp").forward(request, response);
+            // 30 minutes session timeout
+            session.setMaxInactiveInterval(30 * 60);
+
+            // Set the username attribute
+            session.setAttribute("username", username);
+
+            // Redirect to welcome servlet
+            response.sendRedirect(request.getContextPath() + "/welcome");
+        } else {
+            request.setAttribute("errorMessage", "Invalid username or password");
+            request.getRequestDispatcher("/WEB-INF/views/login-test.jsp").forward(request, response);
+        }
     }
 }
