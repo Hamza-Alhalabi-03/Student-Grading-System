@@ -1,8 +1,8 @@
 package webapp.data;
 
 import com.mysql.cj.jdbc.MysqlDataSource;
-import webapp.model.Role;
-import webapp.model.User;
+import webapp.models.Role;
+import webapp.models.User;
 
 import javax.sql.DataSource;
 import java.sql.*;

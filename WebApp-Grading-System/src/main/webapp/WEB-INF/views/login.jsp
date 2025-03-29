@@ -7,7 +7,7 @@
 </head>
 <body>
     <div class="container">
-        <h2>Login</h2>
+        <h2>Web-App Login</h2>
 
         <%
         String errorMessage = (String) request.getAttribute("errorMessage");

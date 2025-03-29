@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Instructor Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+    <div class="container">
+        <h2 th:text="'Welcome, ' + ${session.username}"></h2>
+
+        <div class="clearfix">
+            <div class="menu">
+                <h3>Menu:</h3>
+                <ul>
+                    <li><a th:href="@{/instructor/courses}">View Courses</a></li>
+                    <li><a th:href="@{/instructor/courseGrades}">View Course Grades</a></li>
+                    <li><a th:href="@{/instructor/editGrade}">Edit Student Grade</a></li>
+                    <li><a th:href="@{/instructor/statistics}">View Course Statistics</a></li>
+                    <li><a th:href="@{/logout}">Logout</a></li>
+                </ul>
+            </div>
+
+            <div class="content">
+                <h3>Instructor Dashboard</h3>
+                <p>Welcome to your instructor dashboard. Use the menu to select an option.</p>
+
+                <!-- Display message/error if exists -->
+                <div class="success-message" th:if="${message}" th:text="${message}"></div>
+                <div class="error-message" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+                <!-- 1. View Courses -->
+                <div th:if="${operation == 'viewCourses' && !#lists.isEmpty(courses)}">
+                    <h4>My Courses</h4>
+                    <table>
+                        <tr>
+                            <th>Course Name</th>
+                        </tr>
+                        <tr th:each="course : ${courses}">
+                            <td th:text="${course}"></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- 2. View Course Grades - Course Selection -->
+                <div th:if="${operation == 'selectCourseForGrades' && !#lists.isEmpty(courses)}">
+                    <h4>Select Course to View Grades</h4>
+                    <table>
+                        <tr>
+                            <th>Course Name</th>
+                            <th>Action</th>
+                        </tr>
+                        <tr th:each="course : ${courses}">
+                            <td th:text="${course}"></td>
+                            <td>
+                                <a th:href="@{/instructor/courseGrades(course=${course})}">View Grades</a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- 2. View Course Grades - Display Grades -->
+                <div th:if="${operation == 'viewCourseGrades' && !#maps.isEmpty(courseGrades)}">
+                    <h4 th:text="'Student Grades for ' + ${selectedCourse}"></h4>
+                    <table>
+                        <tr>
+                            <th>Student</th>
+                            <th>Grade</th>
+                        </tr>
+                        <tr th:each="grade : ${courseGrades}">
+                            <td th:text="${grade.key}"></td>
+                            <td th:text="${grade.value}"></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- 3. Edit Student Grade - Course Selection -->
+                <div th:if="${operation == 'selectCourseForGradeEdit' && !#lists.isEmpty(courses)}">
+                    <h4>Select Course to Edit Grades</h4>
+                    <table>
+                        <tr>
+                            <th>Course Name</th>
+                            <th>Action</th>
+                        </tr>
+                        <tr th:each="course : ${courses}">
+                            <td th:text="${course}"></td>
+                            <td>
+                                <a th:href="@{/instructor/editGrade(course=${course})}">Edit Grades</a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- 3. Edit Student Grade - Student Selection -->
+                <div th:if="${operation == 'selectStudentForGradeEdit' && !#maps.isEmpty(courseGrades)}">
+                    <h4 th:text="'Select Student to Edit Grade for ' + ${selectedCourse}"></h4>
+                    <table>
+                        <tr>
+                            <th>Student</th>
+                            <th>Current Grade</th>
+                            <th>Action</th>
+                        </tr>
+                        <tr th:each="grade : ${courseGrades}">
+                            <td th:text="${grade.key}"></td>
+                            <td th:text="${grade.value}"></td>
+                            <td>
+                                <a th:href="@{/instructor/editGrade(course=${selectedCourse},student=${grade.key})}">Edit</a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- 3. Edit Student Grade - Edit Form -->
+                <div th:if="${operation == 'editGradeForm' && selectedCourse != null && selectedStudent != null}">
+                    <h4 th:text="'Edit Grade for ' + ${selectedStudent} + ' in ' + ${selectedCourse}"></h4>
+                    <form th:action="@{/instructor/updateGrade}" method="post">
+                        <input type="hidden" name="course" th:value="${selectedCourse}">
+                        <input type="hidden" name="student" th:value="${selectedStudent}">
+                        <label for="newGrade">New Grade:</label>
+                        <input type="text" id="newGrade" name="newGrade" required>
+                        <input type="submit" value="Update Grade">
+                    </form>
+                </div>
+
+                <!-- 4. Course Statistics - Display Statistics -->
+                <div th:if="${!#maps.isEmpty(statistics)}">
+                    <h4 th:text="'Statistics for ' + ${selectedCourse}"></h4>
+                    <table>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Value</th>
+                        </tr>
+                        <tr>
+                            <td>Total Students</td>
+                            <td th:text="${statistics.totalStudents}"></td>
+                        </tr>
+                        <tr>
+                            <td>Average Grade</td>
+                            <td th:text="${statistics.averageGrade}"></td>
+                        </tr>
+                        <tr>
+                            <td>Highest Grade</td>
+                            <td th:text="${statistics.highestGrade}"></td>
+                        </tr>
+                        <tr>
+                            <td>Lowest Grade</td>
+                            <td th:text="${statistics.lowestGrade}"></td>
+                        </tr>
+                        <tr>
+                            <td>Median Grade</td>
+                            <td th:text="${statistics.medianGrade}"></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- 4. Course Statistics - Course Selection -->
+                <div th:if="${operation == 'selectCourseForStatistics' && !#lists.isEmpty(courses)}">
+                    <h4>Select Course to View Statistics</h4>
+                    <table>
+                        <tr>
+                            <th>Course Name</th>
+                            <th>Action</th>
+                        </tr>
+                        <tr th:each="course : ${courses}">
+                            <td th:text="${course}"></td>
+                            <td>
+                                <a th:href="@{/instructor/statistics(course=${course})}">View Statistics</a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 
