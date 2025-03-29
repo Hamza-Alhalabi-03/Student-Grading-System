@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import jakarta.servlet.http.HttpSession;
 import java.util.HashMap;
@@ -39,10 +38,8 @@ public class LoginController {
             // Set 30 minutes session timeout
             session.setMaxInactiveInterval(30 * 60);
 
-            // Get the User object
             User user = gradingDAO.getUser(username, password);
             
-            // Store user information in session
             session.setAttribute("username", username);
             session.setAttribute("userRole", user.getRole().toString());
 

@@ -216,9 +216,7 @@ public class InstructorController extends BaseController {
         
         return ResponseEntity.ok(response);
     }
-    
-    // Private helper methods
-    
+
     private String viewCourses(HttpSession session, HttpServletRequest request, Model model, String username) {
         List<String> courses = gradingDAO.getInstructorCourses(username);
         model.addAttribute("courses", courses);

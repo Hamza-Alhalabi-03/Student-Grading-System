@@ -53,7 +53,6 @@ public class DashboardController {
             }
         }
         
-        // Handle operations for each role
         if ("STUDENT".equalsIgnoreCase(userRole)) {
             switch (operation) {
                 case "viewCourses":
@@ -94,7 +93,6 @@ public class DashboardController {
                     return "redirect:/admin";
             }
         } else {
-            // Unknown role, redirect to login page
             return "redirect:/login";
         }
     }

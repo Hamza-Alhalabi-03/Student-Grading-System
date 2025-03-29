@@ -23,12 +23,10 @@ public class AdminController extends BaseController {
     
     @GetMapping
     public String showDashboard(HttpSession session, HttpServletRequest request, Model model) throws IOException {
-        // Check authorization
         if (!checkAuthorization(session, "admin")) {
             return "redirect:/login";
         }
         
-        // Process any session messages
         processSessionMessages(request, model);
         
         // Default to view all users
@@ -37,12 +35,10 @@ public class AdminController extends BaseController {
     
     @GetMapping("/users")
     public String showUsers(HttpSession session, HttpServletRequest request, Model model) throws IOException {
-        // Check authorization
         if (!checkAuthorization(session, "admin")) {
             return "redirect:/login";
         }
         
-        // Process any session messages
         processSessionMessages(request, model);
         
         return viewAllUsers(request, model);
@@ -50,12 +46,10 @@ public class AdminController extends BaseController {
     
     @GetMapping("/courses")
     public String showCourses(HttpSession session, HttpServletRequest request, Model model) throws IOException {
-        // Check authorization
         if (!checkAuthorization(session, "admin")) {
             return "redirect:/login";
         }
         
-        // Process any session messages
         processSessionMessages(request, model);
         
         return viewAllCourses(request, model);
@@ -63,12 +57,10 @@ public class AdminController extends BaseController {
     
     @GetMapping("/addStudent")
     public String showAddStudentForm(HttpSession session, HttpServletRequest request, Model model) throws IOException {
-        // Check authorization
         if (!checkAuthorization(session, "admin")) {
             return "redirect:/login";
         }
         
-        // Process any session messages
         processSessionMessages(request, model);
         
         model.addAttribute("operation", "addStudent");
@@ -77,12 +69,10 @@ public class AdminController extends BaseController {
     
     @GetMapping("/addInstructor")
     public String showAddInstructorForm(HttpSession session, HttpServletRequest request, Model model) throws IOException {
-        // Check authorization
         if (!checkAuthorization(session, "admin")) {
             return "redirect:/login";
         }
         
-        // Process any session messages
         processSessionMessages(request, model);
         
         model.addAttribute("operation", "addInstructor");
@@ -91,12 +81,10 @@ public class AdminController extends BaseController {
     
     @GetMapping("/addCourse")
     public String showAddCourseForm(HttpSession session, HttpServletRequest request, Model model) throws IOException {
-        // Check authorization
         if (!checkAuthorization(session, "admin")) {
             return "redirect:/login";
         }
         
-        // Process any session messages
         processSessionMessages(request, model);
         
         return prepareAddCourseForm(model);
@@ -110,12 +98,10 @@ public class AdminController extends BaseController {
             @RequestParam(required = false) String username,
             RedirectAttributes redirectAttributes) throws IOException {
         
-        // Check authorization
         if (!checkAuthorization(session, "admin")) {
             return "redirect:/login";
         }
         
-        // Process any session messages
         processSessionMessages(request, model);
         
         if (username != null && !username.trim().isEmpty()) {
@@ -133,12 +119,10 @@ public class AdminController extends BaseController {
             @RequestParam(required = false) String username,
             RedirectAttributes redirectAttributes) throws IOException {
         
-        // Check authorization
         if (!checkAuthorization(session, "admin")) {
             return "redirect:/login";
         }
         
-        // Process any session messages
         processSessionMessages(request, model);
         
         if (username != null && !username.trim().isEmpty()) {
@@ -156,7 +140,6 @@ public class AdminController extends BaseController {
             Model model,
             RedirectAttributes redirectAttributes) throws IOException {
         
-        // Check authorization
         if (!checkAuthorization(session, "admin")) {
             return "redirect:/login";
         }
@@ -169,17 +152,14 @@ public class AdminController extends BaseController {
             return "admin-dashboard";
         }
         
-        // Add student
         boolean studentAdded = gradingDAO.addUser(username, password, Role.STUDENT);
         
-        // Set message
         if (studentAdded) {
             redirectAttributes.addFlashAttribute("message", "Student added successfully");
         } else {
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to add student");
         }
         
-        // Redirect to view all users
         return "redirect:/admin/users";
     }
     
@@ -191,7 +171,6 @@ public class AdminController extends BaseController {
             Model model,
             RedirectAttributes redirectAttributes) throws IOException {
         
-        // Check authorization
         if (!checkAuthorization(session, "admin")) {
             return "redirect:/login";
         }
@@ -204,17 +183,14 @@ public class AdminController extends BaseController {
             return "admin-dashboard";
         }
         
-        // Add instructor
         boolean instructorAdded = gradingDAO.addUser(username, password, Role.INSTRUCTOR);
         
-        // Set message
         if (instructorAdded) {
             redirectAttributes.addFlashAttribute("message", "Instructor added successfully");
         } else {
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to add instructor");
         }
         
-        // Redirect to view all users
         return "redirect:/admin/users";
     }
     
@@ -226,12 +202,10 @@ public class AdminController extends BaseController {
             Model model,
             RedirectAttributes redirectAttributes) throws IOException {
         
-        // Check authorization
         if (!checkAuthorization(session, "admin")) {
             return "redirect:/login";
         }
         
-        // Validate parameters
         if (courseName == null || instructorName == null ||
                 courseName.trim().isEmpty() || instructorName.trim().isEmpty()) {
             model.addAttribute("errorMessage", "All fields are required");
@@ -239,7 +213,6 @@ public class AdminController extends BaseController {
             return prepareAddCourseForm(model);
         }
         
-        // Add course
         boolean courseAdded = gradingDAO.addCourse(courseName, instructorName);
         
         // Set message
@@ -249,7 +222,6 @@ public class AdminController extends BaseController {
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to add course");
         }
         
-        // Redirect to view all courses
         return "redirect:/admin/courses";
     }
     
@@ -300,7 +272,6 @@ public class AdminController extends BaseController {
             return ResponseEntity.badRequest().body(response);
         }
         
-        // Add student
         boolean studentAdded = gradingDAO.addUser(username, password, Role.STUDENT);
         
         response.put("success", studentAdded);
@@ -336,7 +307,6 @@ public class AdminController extends BaseController {
             return ResponseEntity.badRequest().body(response);
         }
         
-        // Add instructor
         boolean instructorAdded = gradingDAO.addUser(username, password, Role.INSTRUCTOR);
         
         response.put("success", instructorAdded);
@@ -404,7 +374,6 @@ public class AdminController extends BaseController {
             return ResponseEntity.badRequest().body(response);
         }
         
-        // Delete user
         boolean userDeleted = gradingDAO.deleteUser(username);
         
         response.put("success", userDeleted);
@@ -416,9 +385,7 @@ public class AdminController extends BaseController {
         
         return ResponseEntity.ok(response);
     }
-    
-    // Private helper methods
-    
+
     private String viewAllUsers(HttpServletRequest request, Model model) {
         // Fetch all users
         Map<String, String> allUsers = gradingDAO.getUsers();
@@ -429,7 +396,6 @@ public class AdminController extends BaseController {
     }
     
     private String viewAllCourses(HttpServletRequest request, Model model) {
-        // Fetch all courses
         Map<String, String> courses = gradingDAO.getCourses();
         model.addAttribute("courses", courses);
         model.addAttribute("operation", "viewAllCourses");
@@ -498,12 +464,10 @@ public class AdminController extends BaseController {
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to delete student");
         }
         
-        // Redirect to view all users
         return "redirect:/admin/users";
     }
     
     private String processInstructorDeletion(String instructorUsername, RedirectAttributes redirectAttributes) {
-        // Delete instructor and set message
         boolean success = gradingDAO.deleteUser(instructorUsername);
         
         // Store message
@@ -513,7 +477,6 @@ public class AdminController extends BaseController {
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to delete instructor");
         }
         
-        // Redirect to view all users
         return "redirect:/admin/users";
     }
 } 
