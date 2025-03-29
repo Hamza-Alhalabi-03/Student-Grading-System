@@ -1,0 +1,37 @@
+
+^
+java:S2095""HUse try-with-resources or close this "Connection" in a "finally" clause.(êØ±¨
+b
+java:S20952"GUse try-with-resources or close this "Statement" in a "finally" clause.(ìï‡Àûÿÿÿÿ
+e
+java:S2095)"OUse try-with-resources or close this "CallableStatement" in a "finally" clause.(ÉÓ¬‚
+e
+java:S2095x"OUse try-with-resources or close this "CallableStatement" in a "finally" clause.(¢óñÈ
+e
+java:S2095D"OUse try-with-resources or close this "CallableStatement" in a "finally" clause.(ÉÓ¬‚
+e
+java:S2095R"OUse try-with-resources or close this "CallableStatement" in a "finally" clause.(ÉÓ¬‚
+>	java:S108")Either remove or fill this block of code.(”ı¾
+K
+java:S1117"5Rename "ds" which hides the field declared at line 8.(¥ÈÄÄ
+V	java:S125"<This block of commented-out lines of code should be removed.(Ä³Úİÿÿÿÿÿ
+S	java:S106#"9Replace this use of System.out or System.err by a logger.(ƒ®õ¯üÿÿÿÿ
+N	java:S106$"9Replace this use of System.out or System.err by a logger.(”‰ˆä
+V	java:S125%"<This block of commented-out lines of code should be removed.(ê‹î—øÿÿÿÿ
+S	java:S106,"9Replace this use of System.out or System.err by a logger.(Å®›ôùÿÿÿÿ
+l
+java:S34575"Q%n should be used in place of \n to produce the platform-specific line separator.(ª«×ñüÿÿÿÿ
+S	java:S1065"9Replace this use of System.out or System.err by a logger.(ª«×ñüÿÿÿÿ
+S	java:S106;"9Replace this use of System.out or System.err by a logger.(ŞÒ—üÿÿÿÿ
+N	java:S106H"9Replace this use of System.out or System.err by a logger.(­‹Ë˜
+N	java:S106M"9Replace this use of System.out or System.err by a logger.(´à™ã
+N	java:S106N"9Replace this use of System.out or System.err by a logger.(ÿƒ¿
+S	java:S106\"9Replace this use of System.out or System.err by a logger.(Ş‡Õœùÿÿÿÿ
+N	java:S106]"9Replace this use of System.out or System.err by a logger.(Ã‘‰İ
+S	java:S106^"9Replace this use of System.out or System.err by a logger.(Öüç†ıÿÿÿÿ
+S	java:S106_"9Replace this use of System.out or System.err by a logger.(ñèòÚÿÿÿÿÿ
+S	java:S106d"9Replace this use of System.out or System.err by a logger.(Úª¿Õşÿÿÿÿ
+N	java:S106i"9Replace this use of System.out or System.err by a logger.(ûŠéí
+S	java:S106n"9Replace this use of System.out or System.err by a logger.(‰Ïšúÿÿÿÿ
+S	java:S106r"9Replace this use of System.out or System.err by a logger.(ã€„Ñıÿÿÿÿ
+N	java:S106~"9Replace this use of System.out or System.err by a logger.(äÈİ­
